@@ -1,10 +1,12 @@
 #from django.http import Http404
-#from django.http import HttpResponse
+from django.db.models import F
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.template import loader
+#from django.template import loader
+from django.urls import reverse
 
-from .models import Question
-from .models import Choice
+from .models import Choice, Question
+
 
 def detail(request, question_id):
     #try:
@@ -23,7 +25,22 @@ def results(request, question_id):
     return HttpResponse( response % question_id)
 
 def vote(request, question_id):
-    return HttpResponse("Hlasuješ k dotazu %s." % question_id)
+    dotaz = get_object_or_404(Question, pk=question_id)
+    try:
+        sele_choice = dotaz.choice_set.get(pk=request.Post["choice"])
+    except (KeyError, Choice.DoesNotExist):
+        return render(
+            request,
+            "polls/detail.html",
+            {
+                "question": dotaz,
+                "error_message": "Nevybral jsi odpověď.",
+            },
+        )
+    else:
+        sele_choice.votes = F('votes')+1
+        sele_choice.save()
+        return HttpResponseRedirect(reverse( 'polls:results', args=(question_id,)))
 
 
 
