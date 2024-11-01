@@ -1,6 +1,5 @@
-#from django.http import Http404
 from django.db.models import F
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect #, Http404
 from django.shortcuts import get_object_or_404, render
 #from django.template import loader
 from django.urls import reverse
@@ -27,7 +26,7 @@ def results(request, question_id):
 def vote(request, question_id):
     dotaz = get_object_or_404(Question, pk=question_id)
     try:
-        sele_choice = dotaz.choice_set.get(pk=request.Post["choice"])
+        sele_choice = dotaz.choice_set.get(pk=request.POST["choice"])
     except (KeyError, Choice.DoesNotExist):
         return render(
             request,

@@ -11,7 +11,7 @@
 {% if latest_question_list %}
     <ul>
     {% for question in latest_question_list %}
-         jestli tu hledáě hovno, mrkni do polls/urls."py"
+         
         <br>
         <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
     {% endfor %}
